@@ -1,0 +1,53 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+bool isAccepted(string input) {
+        int state = 0; 
+
+    for (char ch : input) {
+        if (ch != 'a' && ch != 'b') {
+            return false;   // Reject invalid symbols immediately
+        }
+
+             if (state == 0) {
+            if (ch == 'a') state = 1;
+            else state = 0; // ch == 'b'
+        } 
+        else if (state == 1) {
+            if (ch == 'a') state = 1;
+            else state = 2; // ch == 'b' -> we found "ab"
+        } 
+        else if (state == 2) {
+            if (ch == 'a') state = 1; // "aba" breaks the ending, back to q1
+            else state = 0;           // "abb" breaks the ending, back to q0
+        }
+    }
+    return (state == 2);
+}
+
+int main() {
+    string testCases[] = {
+        "ab",       // accepted (is exactly "ab")
+        "baab",     // accepted (ends with "ab")
+        "aabb",     // rejected (ends with "bb")
+        "aba",      // rejected (ends with "ba")
+        "aabab",    // accepted (ends with "ab")
+        "abc"       // rejected (contains invalid symbol 'c')
+    };
+
+    cout << "DFA: Accepts strings ending with 'ab'" << endl;
+    cout << "-------------------------------------" << endl;
+
+    for (string str : testCases) {
+        cout << "Input: \"" << str << "\"\t-> ";
+
+        if (isAccepted(str)) {
+            cout << "Accepted" << endl;
+        } else {
+            cout << "Rejected" << endl;
+        }
+    }
+
+    return 0;
+}
